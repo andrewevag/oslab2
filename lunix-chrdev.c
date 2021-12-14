@@ -135,7 +135,7 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	}
 	//Set state parameters
 	new_chdev_state->type = mes_type;
-	new_chdev_state->sensor = lunix_sensors[sensor_id];
+	new_chdev_state->sensor = &lunix_sensors[sensor_id];
 	new_chdev_state->buf_lim = 0;
 	new_chdev_state->buf_timestamp = 0;
 	//buf lim 9a pros9esw toy filou mou to (?)
