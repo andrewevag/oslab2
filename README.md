@@ -84,6 +84,8 @@ O πυρήνας αρχικοποιεί κάποια δομή <b>file</b> και
 ```
 Πρέπει για κάθε αρχείο να κρατάμε ξεχωριστό
 ``` C
+	enum lunix_msr_enum { BATT = 0, TEMP, LIGHT, N_LUNIX_MSR };
+
     /*
      * Private state for an open character device node
      */

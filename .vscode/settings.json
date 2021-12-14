@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.pl": "prolog",
+        "*.8085": "TASM-8085",
+        "cstdio": "c"
+    }
+}

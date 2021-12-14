@@ -44,8 +44,14 @@ static int lunix_chrdev_state_needs_refresh(struct lunix_chrdev_state_struct *st
 	WARN_ON ( !(sensor = state->sensor));
 	/* ? */
 
+	if(state->buf_timestamp == sensor->msr_data[state->type]->last_update)
+	{
+		return 0;
+	}
+	
+
 	/* The following return is bogus, just for the stub to compile */
-	return 0; /* ? */
+	return 1; /* ? */
 }
 
 /*
@@ -56,7 +62,7 @@ static int lunix_chrdev_state_needs_refresh(struct lunix_chrdev_state_struct *st
 static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 {
 	struct lunix_sensor_struct *sensor;
-	
+	uint32_t temp_val;
 	debug("leaving\n");
 
 	/*
@@ -64,27 +70,54 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	 * spinlock for as little as possible.
 	 */
 	/* ? */
+
+	if(lunix_chrdev_state_needs_refresh(state) == 1)
+	{
+		return -EAGAIN;
+	}
+
+	// an den exei nea dedomena dwse  -EAGAIN
 	/* Why use spinlocks? See LDD3, p. 119 */
-
+	spin_lock(&sensor->lock);
 	//SPLIN LOCK TO GET THE DATA FROM THE LINE DISCIPLE SENSOR_STRUCT
-
+	//kai valta ston lunix_chrdev_state_struct.
+	//kanoume copy to timestampt, kai ta dedomena ston buf_data
+	state->buf_timestamp = sensor->msr_data[state->type]->last_update;
+	temp_val = sensor->msr_data[state->type]->values;
 	/*
 	 * Any new data available?
 	 */
 	/* ? */
+	//SPIN UNLOCK
+	spin_unlock(&sensor->lock);
 
-	//SPLIN UNLOCK
-
+	unsigned int dekadiko_meros, akeraio_meros;
+	long whole;
 	/*
 	 * Now we can take our time to format them,
 	 * holding only the private state semaphore
 	 */
-	//EDW KRATAS SEMAPHORE META3U TWN PROCESSES POU EXOUN KANEI READ GIA TO SUGKEKRIMENO
-	//EIDOS CHARACTER DEVICE POU SHMAINEI OTI TA DEDOMENA SOU PREPEI NA TA XWRISEIS ANALOG
-	//ME TO TI DEVICE EINAI AUTOS POU TO KALESE
+	switch (state->type)
+	{
+	case BATT:
+		//edw mporei na einai mono 9etikes times.
+		whole = lookup_voltage[temp_val];
+		break;
+	case TEMP:
+		whole = lookup_temperature[temp_val];
+		break;
+	case LIGHT:
+		whole = lookup_light[temp_val];
+		break;
+	default:
+		break;
+	}
+	akeraio_meros = whole / 10000;
+	dekadiko_meros = whole % 10000;
+	state->buf_lim = snprintf(state->buf_data, LUNIX_CHRDEV_BUFSZ, "%d.%d\n", akeraio_meros, dekadiko_meros);
 
 	/* ? */
-
+	// debug("%s\n", buf_data);
 	debug("leaving\n");
 	return 0;
 }
@@ -166,9 +199,9 @@ static long lunix_chrdev_ioctl(struct file *filp, unsigned int cmd, unsigned lon
 
 static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t cnt, loff_t *f_pos)
 {
-	//diko mas
-	return 0;
-	ssize_t ret;
+	
+	
+	ssize_t ret = 0;
 
 	struct lunix_sensor_struct *sensor;
 	struct lunix_chrdev_state_struct *state;
@@ -182,8 +215,8 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 	/* Lock? */
 
 	//DIKO MAS
-	// if (down_interruptible(&state->sem))
- 	// 	return -ERESTARTSYS;
+	if (down_interruptible(&state->lock))
+ 		return -ERESTARTSYS;
 
 
 
@@ -193,13 +226,21 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 	 * on a "fresh" measurement, do so
 	 */
 	if (*f_pos == 0) {
+		//if we enter here it means all data are consumed
 		while (lunix_chrdev_state_update(state) == -EAGAIN) {
 			/* ? */
+			up(&state->lock); //release the lock.
 			/* The process needs to sleep */
 			/* See LDD3, page 153 for a hint */
 
-			//if you can't take the spinlock 
-			//mpes sthn oura tou spinlock kai 9a se 3upnhsei to line_disciple
+			//if no data.
+			//mpes sthn oura tou sensor kai 9a se 3upnhsei to line_disciple
+			if(wait_event_interruptible(sensor->wq, true))
+				return -ERESTARTSYS;
+
+			//reacquire lock
+			if (down_interruptible(&state->lock))
+ 				return -ERESTARTSYS;
 		}
 	}
 
@@ -208,11 +249,31 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 	
 	/* Determine the number of cached bytes to copy to userspace */
 	/* ? */
+	if(*f_pos >= state->buflim){
+ 		*f_pos = 0;
+		goto out;
 
+	}
+ 	if(*f_pos + cnt > state->buflim)
+ 		cnt = state->buflim - *f_pos;
+	
+	//the following checks if the pointer is faulty.
+	if(copy_to_user(usrbuf, state->buf_data + *f_pos, cnt)){
+		ret = -EFAULT;
+		goto out;
+	}
+	
+	*f_pos += cnt;
+	ret = cnt;
 	/* Auto-rewind on EOF mode? */
+	if(*f_pos >= state->buf_lim)
+		*f_pos = 0; //so that on next read we will block till new data arrive.
+	
+
 	/* ? */
 out:
 	/* Unlock? */
+	up(&state->lock); //release the lock.
 	return ret;
 }
 
