@@ -97,6 +97,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 {
 	/* Declarations */
+	unsigned int mes_id, mes_type, sensor_id;
 	/* ? */
 	int ret;
 
@@ -110,7 +111,38 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	 * the minor number of the device node [/dev/sensor<NO>-<TYPE>]
 	 */
 	
+	mes_id = iminor(inode);
+	sensor_id = mes_id >> 3;
+	mes_type = mes_id & 0x7;
+	
+	/*
+	 * Check that the device is of the ones we handle.
+	*/
+	if(sensor_id >= lunix_sensor_cnt || mes_type >= N_LUNIX_MSR){
+		ret = -ENODEV;
+		goto out;
+	}
+	//to lunix_sensor_struct * --> lunix_sensors[sensor_id];
+	
 	/* Allocate a new Lunix character device private state structure */
+	struct lunix_chrdev_state_struct* new_chdev_state;
+	//MHN 3EXASEIS STO CLOSE TO KFREE.
+	new_chdev_state = kzalloc(sizeof(new_chdev_state), GFP_KERNEL);
+
+	if(!new_chdev_state){
+		debug("failed to allocate memory for chrdev_state\n");
+		goto out;
+	}
+	//Set state parameters
+	new_chdev_state->type = mes_type;
+	new_chdev_state->sensor = lunix_sensors[sensor_id];
+	new_chdev_state->buf_lim = 0;
+	new_chdev_state->buf_timestamp = 0;
+	//buf lim 9a pros9esw toy filou mou to (?)
+	//initialize semaphore to avoid race conditions.
+	sema_init(&new_chdev_state->lock, 1);
+
+	debug("successfuly opened\n");
 	/* ? */
 out:
 	debug("leaving, with ret = %d\n", ret);
@@ -120,6 +152,7 @@ out:
 static int lunix_chrdev_release(struct inode *inode, struct file *filp)
 {
 	/* ? */
+	kfree((filp->private_data));
 	return 0;
 }
 
@@ -131,6 +164,8 @@ static long lunix_chrdev_ioctl(struct file *filp, unsigned int cmd, unsigned lon
 
 static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t cnt, loff_t *f_pos)
 {
+	//diko mas
+	return 0;
 	ssize_t ret;
 
 	struct lunix_sensor_struct *sensor;
