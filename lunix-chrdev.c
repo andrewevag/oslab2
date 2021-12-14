@@ -142,6 +142,8 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	//initialize semaphore to avoid race conditions.
 	sema_init(&new_chdev_state->lock, 1);
 
+	//pass it to private data
+	filp->private_data = new_chdev_state;
 	debug("successfuly opened\n");
 	/* ? */
 out:
