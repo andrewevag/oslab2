@@ -46,9 +46,11 @@ int lunix_sensor_init(struct lunix_sensor_struct *s)
 	for (i = 0; i < N_LUNIX_MSR; i++)
 		s->msr_data[i] = NULL;
 
-	for (i = 0; i < N_LUNIX_MSR; i++) {
+	for (i = 0; i < N_LUNIX_MSR; i++)
+	{
 		p = get_zeroed_page(GFP_KERNEL);
-		if (!p) {
+		if (!p)
+		{
 			ret = -ENOMEM;
 			goto out;
 		}
@@ -65,17 +67,18 @@ void lunix_sensor_destroy(struct lunix_sensor_struct *s)
 {
 	int i;
 
-	for (i = 0; i < N_LUNIX_MSR; i++) {
+	for (i = 0; i < N_LUNIX_MSR; i++)
+	{
 		if (s->msr_data[i])
 			free_page((unsigned long)s->msr_data[i]);
 	}
 }
 
 void lunix_sensor_update(struct lunix_sensor_struct *s,
-	uint16_t batt, uint16_t temp, uint16_t light)
+						 uint16_t batt, uint16_t temp, uint16_t light)
 {
 	spin_lock(&s->lock);
-	
+
 	/*
 	 * Update the raw values and the relevant timestamps.
 	 */
@@ -85,7 +88,7 @@ void lunix_sensor_update(struct lunix_sensor_struct *s,
 
 	s->msr_data[BATT]->magic = s->msr_data[TEMP]->magic = s->msr_data[LIGHT]->magic = LUNIX_MSR_MAGIC;
 	s->msr_data[BATT]->last_update = s->msr_data[TEMP]->last_update = s->msr_data[LIGHT]->last_update = get_seconds();
-	
+
 	spin_unlock(&s->lock);
 
 	/*

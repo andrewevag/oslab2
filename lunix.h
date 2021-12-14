@@ -28,7 +28,7 @@
 #define LUNIX_MSR_MAGIC 0xF00DF00D
 
 enum lunix_msr_enum { BATT = 0, TEMP, LIGHT, N_LUNIX_MSR };
-struct lunix_sensor_struct {
+struct lunix_sensor_struct { //1 gia ka9e sensora
 	/*
 	 * A number of pages, one for each measurement.
 	 * They can be mapped to userspace.

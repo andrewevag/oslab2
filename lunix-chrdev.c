@@ -4,8 +4,8 @@
  * Implementation of character devices
  * for Lunix:TNG
  *
- * < Your name here >
- *
+ * Andreas Evaggelatos
+ * Panagiota-Nikoletta Barmpa
  */
 
 #include <linux/mm.h>
@@ -66,15 +66,22 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	/* ? */
 	/* Why use spinlocks? See LDD3, p. 119 */
 
+	//SPLIN LOCK TO GET THE DATA FROM THE LINE DISCIPLE SENSOR_STRUCT
+
 	/*
 	 * Any new data available?
 	 */
 	/* ? */
 
+	//SPLIN UNLOCK
+
 	/*
 	 * Now we can take our time to format them,
 	 * holding only the private state semaphore
 	 */
+	//EDW KRATAS SEMAPHORE META3U TWN PROCESSES POU EXOUN KANEI READ GIA TO SUGKEKRIMENO
+	//EIDOS CHARACTER DEVICE POU SHMAINEI OTI TA DEDOMENA SOU PREPEI NA TA XWRISEIS ANALOG
+	//ME TO TI DEVICE EINAI AUTOS POU TO KALESE
 
 	/* ? */
 
@@ -136,6 +143,13 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 	WARN_ON(!sensor);
 
 	/* Lock? */
+
+	//DIKO MAS
+	// if (down_interruptible(&state->sem))
+ 	// 	return -ERESTARTSYS;
+
+
+
 	/*
 	 * If the cached character device state needs to be
 	 * updated by actual sensor data (i.e. we need to report
@@ -146,6 +160,9 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 			/* ? */
 			/* The process needs to sleep */
 			/* See LDD3, page 153 for a hint */
+
+			//if you can't take the spinlock 
+			//mpes sthn oura tou spinlock kai 9a se 3upnhsei to line_disciple
 		}
 	}
 
@@ -195,12 +212,18 @@ int lunix_chrdev_init(void)
 	dev_no = MKDEV(LUNIX_CHRDEV_MAJOR, 0);
 	/* ? */
 	/* register_chrdev_region? */
+	ret = register_chrdev_region(dev_no, lunix_minor_cnt, "lunix");
 	if (ret < 0) {
 		debug("failed to register region, ret = %d\n", ret);
 		goto out;
 	}	
 	/* ? */
 	/* cdev_add? */
+
+
+	ret = cdev_add(&lunix_chrdev_cdev, dev_no, lunix_minor_cnt);
+	
+	
 	if (ret < 0) {
 		debug("failed to add character device\n");
 		goto out_with_chrdev_region;

@@ -35,9 +35,9 @@ static int lunix_ldisc_open(struct tty_struct *tty)
 {
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
-	
+
 	/* Can only be associated with a single TTY */
-	if ( !atomic_add_unless(&lunix_disc_available, -1, 0))
+	if (!atomic_add_unless(&lunix_disc_available, -1, 0))
 		return -EBUSY;
 
 	tty->receive_room = 65536; /* No flow control, FIXME */
@@ -65,7 +65,7 @@ static void lunix_ldisc_close(struct tty_struct *tty)
  * will not be re-entered while running.
  */
 static void lunix_ldisc_receive(struct tty_struct *tty,
-	const unsigned char *cp, char *fp, int count)
+								const unsigned char *cp, char *fp, int count)
 {
 #if 1
 #if LUNIX_DEBUG
@@ -83,7 +83,7 @@ static void lunix_ldisc_receive(struct tty_struct *tty,
 	 * which handle any necessary sensor updates.
 	 */
 	lunix_protocol_received_buf(&lunix_protocol_state, cp, count);
-	//debug("passed incoming bytes to state machine, leaving\n");
+	// debug("passed incoming bytes to state machine, leaving\n");
 }
 
 /*
@@ -91,15 +91,15 @@ static void lunix_ldisc_receive(struct tty_struct *tty,
  * or write() calls after this discipline has been set to it.
  */
 
-static ssize_t lunix_ldisc_read(struct tty_struct * tty, struct file * file,
-	unsigned char __user * buf, size_t cnt)
+static ssize_t lunix_ldisc_read(struct tty_struct *tty, struct file *file,
+								unsigned char __user *buf, size_t cnt)
 {
 	debug("called, returning -EIO\n");
 	return -EIO;
 }
 
-static ssize_t lunix_ldisc_write(struct tty_struct * tty, struct file * file,
-	const unsigned char __user * buf, size_t cnt)
+static ssize_t lunix_ldisc_write(struct tty_struct *tty, struct file *file,
+								 const unsigned char __user *buf, size_t cnt)
 {
 	debug("called, returning -EIO\n");
 	return -EIO;
@@ -111,14 +111,13 @@ static ssize_t lunix_ldisc_write(struct tty_struct * tty, struct file * file,
  */
 
 static struct tty_ldisc_ops lunix_ldisc_ops = {
-	.owner =	THIS_MODULE,
-	.name =		"lunix",
-	.open =		lunix_ldisc_open,
-	.close =	lunix_ldisc_close,
-	.read =		lunix_ldisc_read,
-	.write =	lunix_ldisc_write,
-	.receive_buf =	lunix_ldisc_receive
-};
+	.owner = THIS_MODULE,
+	.name = "lunix",
+	.open = lunix_ldisc_open,
+	.close = lunix_ldisc_close,
+	.read = lunix_ldisc_read,
+	.write = lunix_ldisc_write,
+	.receive_buf = lunix_ldisc_receive};
 
 int lunix_ldisc_init(void)
 {
@@ -129,7 +128,7 @@ int lunix_ldisc_init(void)
 	ret = tty_register_ldisc(N_LUNIX_LDISC, &lunix_ldisc_ops);
 	if (ret)
 		printk(KERN_ERR "%s: Error registering line discipline, ret = %d.\n", __FILE__, ret);
-	
+
 	debug("leaving with ret = %d\n", ret);
 	return ret;
 }
@@ -140,4 +139,3 @@ void lunix_ldisc_destroy(void)
 	tty_unregister_ldisc(N_LUNIX_LDISC);
 	debug("lunix ldisc unregistered\n");
 }
-
