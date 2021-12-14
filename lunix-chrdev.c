@@ -91,7 +91,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	//SPIN UNLOCK
 	spin_unlock(&sensor->lock);
 
-	unsigned int dekadiko_meros, akeraio_meros;
+	int dekadiko_meros, akeraio_meros;
 	long whole;
 	/*
 	 * Now we can take our time to format them,
