@@ -64,7 +64,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	struct lunix_sensor_struct *sensor;
 	uint32_t temp_val;
 	debug("leaving\n");
-
+	sensor = state->sensor;
 	/*
 	 * Grab the raw data quickly, hold the
 	 * spinlock for as little as possible.
@@ -83,7 +83,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	//kai valta ston lunix_chrdev_state_struct.
 	//kanoume copy to timestampt, kai ta dedomena ston buf_data
 	state->buf_timestamp = sensor->msr_data[state->type]->last_update;
-	temp_val = sensor->msr_data[state->type]->values;
+	temp_val = sensor->msr_data[state->type]->values[0];
 	/*
 	 * Any new data available?
 	 */
@@ -109,7 +109,9 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	case LIGHT:
 		whole = lookup_light[temp_val];
 		break;
+		
 	default:
+		whole = 0;
 		break;
 	}
 	akeraio_meros = whole / 10000;
