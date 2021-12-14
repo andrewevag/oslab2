@@ -249,13 +249,13 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 	
 	/* Determine the number of cached bytes to copy to userspace */
 	/* ? */
-	if(*f_pos >= state->buflim){
+	if(*f_pos >= state->buf_lim){
  		*f_pos = 0;
 		goto out;
 
 	}
- 	if(*f_pos + cnt > state->buflim)
- 		cnt = state->buflim - *f_pos;
+ 	if(*f_pos + cnt > state->buf_lim)
+ 		cnt = state->buf_lim - *f_pos;
 	
 	//the following checks if the pointer is faulty.
 	if(copy_to_user(usrbuf, state->buf_data + *f_pos, cnt)){
