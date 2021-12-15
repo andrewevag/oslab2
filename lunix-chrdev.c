@@ -71,7 +71,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	 */
 	/* ? */
 
-	if(lunix_chrdev_state_needs_refresh(state) == 1)
+	if(lunix_chrdev_state_needs_refresh(state) == 0)
 	{
 		return -EAGAIN;
 	}
