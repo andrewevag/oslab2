@@ -57,7 +57,7 @@ int main(int argc, char** argv){
         printf("opening logfile failed\n");
         exit(EXIT_FAILURE);
     }
-    for(int i = 0 ; i < 10; i ++){
+    for(int i = 0 ; i < 2; i ++){
         for(int j = 0; j < 2; j ++){
             rv = read(batts[j], buf, sizeof(buf));
             if(rv < 0){
