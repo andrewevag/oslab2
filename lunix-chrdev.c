@@ -73,7 +73,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 
 	if(lunix_chrdev_state_needs_refresh(state) == 0)
 	{
-		debug("leaving at needs -EAGAIN\n")
+		debug("leaving at needs -EAGAIN\n");
 		return -EAGAIN;
 	}
 
