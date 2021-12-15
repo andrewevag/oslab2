@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>
-
+#include <sys/wait.h>
 
 
 
@@ -93,7 +93,7 @@ int main(int argc, char** argv){
             wv = write(logfile, buf, rv);
             if(wv != rv){
                 printf("writing value from lunix%d-light less than requested bytes = %d\n", j, wv);
-            
+            }
 
         }
 

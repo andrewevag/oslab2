@@ -69,19 +69,30 @@ mk_lookup_tables: mk_lookup_tables.c
 
 
 test: test.c 
-	$(CC) $(USER_CFLAGS) -o test test.c
+	$(CC) -o test test.c
 
 clean_test: test
 	rm test
 
 
-runit: 
+build_and_runit: 
 	echo ">>>>>>>>>>>>>>>>>>>Starting.."
 	ls -l lunix-chrdev.c
 	echo ">>>>>>>>>>>>>>>>>>>Check it and now will clean"
 	make clean
 	echo ">>>>>>>>>>>>>>>>>>>Rebuild begins"
 	make
+	lsmod | grep lunix
+	echo ">>>>>>>>>>>>>>>>>>>Watch that the module is not loaded"
+	insmod lunix
+	echo ">>>>>>>>>>>>>>>>>>>Watch that the module is loaded"
+	lsmod | grep lunix
+	echo ">>>>>>>>>>>>>>>>>>>Attaching the ldisc"
+	./lunix-attach /dev/ttyS0
+	echo ">>>>>>>>>>>>>>>>>>>Removing the module"
+	rmmod lunix
+
+run_it:
 	lsmod | grep lunix
 	echo ">>>>>>>>>>>>>>>>>>>Watch that the module is not loaded"
 	insmod lunix
