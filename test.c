@@ -64,6 +64,8 @@ int main(int argc, char** argv){
                 printf("read from batt of lunix%d failed\n", j);
                 exit(EXIT_FAILURE);
             }
+
+            buf[rv] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-batt %s\n\0", getpid(), j, buf);
             wv = write(logfile, helperbuf, strlen(helperbuf));
             if(wv != strlen(helperbuf)){
@@ -75,7 +77,7 @@ int main(int argc, char** argv){
                 printf("read from temp of lunix%d failed\n", j);
                 exit(EXIT_FAILURE);
             }
-
+            buf[rv] = '\0';
             for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-temp %s\n\0", getpid(), j, buf);
             wv = write(logfile, helperbuf, strlen(helperbuf));
@@ -84,13 +86,13 @@ int main(int argc, char** argv){
             }
 
 
-
+            
             rv = read(lights[j], buf, sizeof(buf));
             if(rv < 0){
                 printf("read from light of lunix%d failed\n", j);
                 exit(EXIT_FAILURE);
             }
-
+            buf[rv] = '\0';
             for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-light %s\n\0", getpid(), j, buf);
             wv = write(logfile, helperbuf, strlen(helperbuf));
