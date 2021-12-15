@@ -268,7 +268,7 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 
 	debug("before copy_to_user (newchange)   cnt = %d, f_pos = %d\n", cnt, *f_pos);
 	//the following checks if the pointer is faulty.
-	if(copy_to_user(usrbuf, state->buf_data + *f_pos, cnt)){
+	if(copy_to_user(usrbuf, state->buf_data, state->buf_lim)){
 		debug("returned from copy_to_user with fault\n");
 		ret = -EFAULT;
 		goto out;
