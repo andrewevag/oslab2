@@ -262,9 +262,9 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 
 	}
 	
- 	if(*f_pos + cnt > state->buf_lim)
- 		cnt = state->buf_lim - *f_pos;
-		
+ 	// if(*f_pos + cnt > state->buf_lim)
+ 	// 	cnt = state->buf_lim - *f_pos;
+	cnt = min(cnt, state->buf_lim - *f_pos);
 
 	debug("before copy_to_user (newchange)   cnt = %d, f_pos = %d\n", cnt, *f_pos);
 	//the following checks if the pointer is faulty.
