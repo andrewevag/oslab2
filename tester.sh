@@ -1,11 +1,11 @@
 #!/bin/bash
 
-if [ $2 = "fork" ]
+if [ $1 == "fork" ]
 then
     make test
     ./test random
 else
-    if [ $2 = "sep" ]
+    if [ $1 == "sep" ]
     then 
         for x in 1 2
         do
