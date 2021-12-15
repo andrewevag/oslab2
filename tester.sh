@@ -1,5 +1,6 @@
 #!/bin/bash
 make test
+echo "running with $1"
 if [ $1 == "fork" ]
 then
     
