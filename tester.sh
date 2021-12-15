@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 if [$2 = "fork"]
 then
