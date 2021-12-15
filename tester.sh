@@ -1,8 +1,8 @@
 #!/bin/bash
-
+make test
 if [ $1 == "fork" ]
 then
-    make test
+    
     ./test random
 else
     if [ $1 == "sep" ]
