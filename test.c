@@ -51,7 +51,7 @@ int main(int argc, char** argv){
     }
     int rv, wv;
     char helperbuf[BUFSIZ];
-    int logfile = open("lunix-logfile", O_CREAT | O_RDWR | O_TRUNC);
+    int logfile = open("lunix-logfile", O_CREAT | O_RDWR | O_TRUNC, S_IRWXU);
     if(logfile < 0){
         printf("opening logfile failed\n");
         exit(EXIT_FAILURE);
