@@ -64,7 +64,7 @@ int main(int argc, char** argv){
                 exit(EXIT_FAILURE);
             }
             sprintf(helperbuf, "[PID = %d] lunix%d-batt %s", getpid(), j, buf);
-            wv = write(logfile, buf, rv);
+            wv = write(logfile, helperbuf, rv);
             if(wv != rv){
                 printf("writing value from lunix%d-batt less than requested bytes = %d\n", j, wv);
             }
@@ -76,7 +76,7 @@ int main(int argc, char** argv){
             }
 
             sprintf(helperbuf, "[PID = %d] lunix%d-temp %s", getpid(), j, buf);
-            wv = write(logfile, buf, rv);
+            wv = write(logfile, helperbuf, rv);
             if(wv != rv){
                 printf("writing value from lunix%d-temp less than requested bytes = %d\n", j, wv);
             }
@@ -90,7 +90,7 @@ int main(int argc, char** argv){
             }
 
             sprintf(helperbuf, "[PID = %d] lunix%d-light %s", getpid(), j, buf);
-            wv = write(logfile, buf, rv);
+            wv = write(logfile, helperbuf, rv);
             if(wv != rv){
                 printf("writing value from lunix%d-light less than requested bytes = %d\n", j, wv);
             }
