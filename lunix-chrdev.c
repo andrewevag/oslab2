@@ -123,7 +123,7 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	state->buf_lim = snprintf(state->buf_data, LUNIX_CHRDEV_BUFSZ, "%d.%d\n", akeraio_meros, dekadiko_meros);
 
 	/* ? */
-	// debug("%s\n", buf_data);
+	debug("buf data = %s\n", state->buf_data);
 	debug("leaving\n");
 	return 0;
 }
@@ -166,7 +166,7 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	/* Allocate a new Lunix character device private state structure */
 	struct lunix_chrdev_state_struct* new_chdev_state;
 	//MHN 3EXASEIS STO CLOSE TO KFREE.
-	new_chdev_state = kzalloc(sizeof(new_chdev_state), GFP_KERNEL);
+	new_chdev_state = (struct lunix_chrdev_state_struct* )kmalloc(sizeof(struct lunix_chrdev_state_struct), GFP_KERNEL);
 
 	if(!new_chdev_state){
 		debug("failed to allocate memory for chrdev_state\n");
