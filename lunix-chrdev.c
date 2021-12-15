@@ -118,8 +118,8 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 		break;
 	}
 	debug("WHOLE =  %ld\n", whole);
-	akeraio_meros = whole / 10000;
-	dekadiko_meros = whole % 10000;
+	akeraio_meros = whole / 1000;
+	dekadiko_meros = whole % 1000;
 	state->buf_lim = snprintf(state->buf_data, LUNIX_CHRDEV_BUFSZ, "%d.%d\n", akeraio_meros, dekadiko_meros);
 
 	/* ? */
