@@ -174,7 +174,8 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	//Set state parameters
 	new_chdev_state->type = mes_type;
 	new_chdev_state->sensor = &lunix_sensors[sensor_id];
-	new_chdev_state->buf_lim = 0;
+	new_chdev_state->buf_lim = 1;
+	new_chdev_state->buf_data[0] = '\0';
 	new_chdev_state->buf_timestamp = 0;
 	//buf lim 9a pros9esw toy filou mou to (?)
 	//initialize semaphore to avoid race conditions.
@@ -216,7 +217,7 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 
 	sensor = state->sensor;
 	WARN_ON(!sensor);
-
+	
 	/* Lock? */
 
 	//DIKO MAS
@@ -240,7 +241,7 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 
 			//if no data.
 			//mpes sthn oura tou sensor kai 9a se 3upnhsei to line_disciple
-			if(wait_event_interruptible(sensor->wq, true))
+			if(wait_event_interruptible(sensor->wq, lunix_chrdev_state_needs_refresh(state)))
 				return -ERESTARTSYS;
 
 			//reacquire lock
