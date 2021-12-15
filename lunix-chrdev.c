@@ -261,15 +261,19 @@ static ssize_t lunix_chrdev_read(struct file *filp, char __user *usrbuf, size_t 
 		goto out;
 
 	}
+	
  	if(*f_pos + cnt > state->buf_lim)
  		cnt = state->buf_lim - *f_pos;
-	
+		
+
+	debug("before copy_to_user\ncnt = %d, f_pos = %d\n", cnt, *f_pos);
 	//the following checks if the pointer is faulty.
 	if(copy_to_user(usrbuf, state->buf_data + *f_pos, cnt)){
+		debug("returned from copy_to_user with fault\n");
 		ret = -EFAULT;
 		goto out;
 	}
-	
+	debug("returned from copy_to_user without problem\n");
 	*f_pos += cnt;
 	ret = cnt;
 	/* Auto-rewind on EOF mode? */
