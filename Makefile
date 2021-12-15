@@ -76,17 +76,18 @@ clean_test: test
 
 
 runit: 
-	echo "Starting.."
+	echo ">>>>>>>>>>>>>>>>>>>Starting.."
 	ls -l lunix-chrdev.c
-	echo "Check it and now will clean"
+	echo ">>>>>>>>>>>>>>>>>>>Check it and now will clean"
 	make clean
-	echo "Rebuild begins"
+	echo ">>>>>>>>>>>>>>>>>>>Rebuild begins"
 	make
-	lsmod | gerp lunix
-	echo "Watch that the module is not loaded"
-	insmod lunix
-	echo "Watch that the module is loaded"
 	lsmod | grep lunix
-	echo "Attaching the ldisc"
+	echo ">>>>>>>>>>>>>>>>>>>Watch that the module is not loaded"
+	insmod lunix
+	echo ">>>>>>>>>>>>>>>>>>>Watch that the module is loaded"
+	lsmod | grep lunix
+	echo ">>>>>>>>>>>>>>>>>>>Attaching the ldisc"
 	./lunix-attach /dev/ttyS0
+	echo ">>>>>>>>>>>>>>>>>>>Removing the module"
 	rmmod lunix
