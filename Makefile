@@ -65,3 +65,11 @@ lunix-lookup.h: mk_lookup_tables
 mk_lookup_tables: mk_lookup_tables.c
 	$(CC) $(USER_CFLAGS) -o mk_lookup_tables mk_lookup_tables.c -lm
 
+
+
+
+test: test.c 
+	$(CC) $(USER_CFLAGS) -o test test.c
+
+clean_test: test
+	rm test

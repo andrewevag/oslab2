@@ -91,7 +91,8 @@ static int lunix_chrdev_state_update(struct lunix_chrdev_state_struct *state)
 	//SPIN UNLOCK
 	spin_unlock(&sensor->lock);
 	debug("YES THE LINE WORKS---------------------------\n\n\n\n");
-	debug("%d", state->buf_timestamp);
+	debug("%d\n", state->buf_timestamp);
+	debug("temp_val read %u\n", temp_val);
 	int dekadiko_meros, akeraio_meros;
 	long whole;
 	/*
