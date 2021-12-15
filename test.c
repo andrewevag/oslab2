@@ -16,15 +16,7 @@ int main(int argc, char** argv){
     const int father = getpid();
     int cid;
 
-    if(argc == 2){
-        //make the child only if requested
-  
-        cid = fork();
-        if(cid < 0){
-            printf("fork failed\n");
-            exit(EXIT_FAILURE);
-        }
-    }
+    
 
     int batts[2], temps[2], lights[2];
     for(int i = 0 ; i < 2; i ++){
@@ -49,6 +41,18 @@ int main(int argc, char** argv){
             exit(EXIT_FAILURE);
         }
     }
+
+    if(argc == 2){
+        //make the child only if requested
+  
+        cid = fork();
+        if(cid < 0){
+            printf("fork failed\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+
     int rv, wv;
     char helperbuf[BUFSIZ];
     for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
