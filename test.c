@@ -12,7 +12,7 @@ int main(int argc, char** argv){
         exit(EXIT_FAILURE);
     }
     
-    char buf[BUFSIZ];
+    char buf[4096];
     const int father = getpid();
     int cid;
 
