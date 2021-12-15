@@ -64,9 +64,9 @@ int main(int argc, char** argv){
                 printf("read from batt of lunix%d failed\n", j);
                 exit(EXIT_FAILURE);
             }
-            buf[rv] = '\0';
+            
             if(j == 0)
-                printf("read returned for %d with rv = %d with buf = %s\n",getpid(), rv);
+                printf("read returned for %d with rv = %d with buf = %s\n",getpid(), rv, buf);
 
             buf[rv] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-batt %s\n\0", getpid(), j, buf);
