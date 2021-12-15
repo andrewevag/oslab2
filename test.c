@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     int rv, wv;
     char helperbuf[BUFSIZ];
     for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
-    int logfile = open("lunix-logfile", O_CREAT | O_RDWR | O_TRUNC, S_IRWXU);
+    int logfile = open("lunix-logfile", O_CREAT | O_RDWR | O_APPEND, S_IRWXU);
     if(logfile < 0){
         printf("opening logfile failed\n");
         exit(EXIT_FAILURE);
@@ -65,8 +65,8 @@ int main(int argc, char** argv){
                 exit(EXIT_FAILURE);
             }
             
-            if(j == 0)
-                printf("read returned for %d with rv = %d with buf = %s\n",getpid(), rv, buf);
+            // if(j == 0)
+            //     printf("read returned for %d with rv = %d with buf = %s\n",getpid(), rv, buf);
 
             buf[rv] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-batt %s\n\0", getpid(), j, buf);
