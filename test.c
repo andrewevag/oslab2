@@ -51,6 +51,7 @@ int main(int argc, char** argv){
     }
     int rv, wv;
     char helperbuf[BUFSIZ];
+    for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
     int logfile = open("lunix-logfile", O_CREAT | O_RDWR | O_TRUNC, S_IRWXU);
     if(logfile < 0){
         printf("opening logfile failed\n");
@@ -68,13 +69,14 @@ int main(int argc, char** argv){
             if(wv != strlen(helperbuf)){
                 printf("writing value from lunix%d-batt less than requested bytes = %d\n", j, wv);
             }
-
+            
             rv = read(temps[j], buf, sizeof(buf));
             if(rv < 0){
                 printf("read from temp of lunix%d failed\n", j);
                 exit(EXIT_FAILURE);
             }
 
+            for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-temp %s\n\0", getpid(), j, buf);
             wv = write(logfile, helperbuf, strlen(helperbuf));
             if(wv != strlen(helperbuf)){
@@ -89,6 +91,7 @@ int main(int argc, char** argv){
                 exit(EXIT_FAILURE);
             }
 
+            for(int i = 0; i < BUFSIZ; i ++) helperbuf[i] = '\0';
             sprintf(helperbuf, "[PID = %d] lunix%d-light %s\n\0", getpid(), j, buf);
             wv = write(logfile, helperbuf, strlen(helperbuf));
             if(wv != strlen(helperbuf)){
