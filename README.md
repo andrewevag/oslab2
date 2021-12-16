@@ -27,7 +27,7 @@ Minor Numbers (sensor_id * 8 + measurement_num).
 ---
 ## init()
 Aπό τον <i>lunix_sensor_cnt</i> που καθορίζει το <i>module.c</i> έχουμε τον αριθμό των συσκευών που αφορούν μετρήσεις από <i>lunix_sensor_cnt * 8</i> (αν και υποστηρίζουμε μόνο 3 ανα sensor).
-Οπότε με το <i>register_chrdev_region()</i> ορίζουμε πως θα χειριζόμαστε κλήσεις συστήματος για όσες συσκευές έχουν <b>Major Number 60 και
+Οπότε με το <i>register_chrdev_region()</i> ορίζουμε ποιες συσκευές χειριζόμαστε <b>Major Number 60 και
 Minor Numbers (sensor_id * 8 + measurement_num)</b>.
 <br><br>
 Ο πυρήνας θέλει να ορίσουμε και μία δομή <i>cdev</i> με την οποία 
