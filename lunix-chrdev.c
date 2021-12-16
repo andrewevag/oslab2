@@ -45,13 +45,13 @@ static int lunix_chrdev_state_needs_refresh(struct lunix_chrdev_state_struct *st
 	WARN_ON ( !(sensor = state->sensor));
 	/* ? */
 	//0elei lock
-	// spin_lock(&sensor->lock);
+	spin_lock(&sensor->lock);
 	if(state->buf_timestamp == sensor->msr_data[state->type]->last_update)
 	{
-		// spin_unlock(&sensor->lock);
+		spin_unlock(&sensor->lock);
 		return 0;
 	}
-	// spin_unlock(&sensor->lock);
+	spin_unlock(&sensor->lock);
 
 	/* The following return is bogus, just for the stub to compile */
 	return 1; /* ? */
@@ -196,7 +196,7 @@ out:
 
 static int lunix_chrdev_release(struct inode *inode, struct file *filp)
 {
-	/* ? */
+	/* Gets called every time at 0 reference count. */
 	kfree((filp->private_data));
 	return 0;
 }
