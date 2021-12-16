@@ -32,11 +32,14 @@
  * Global data
  */
 struct cdev lunix_chrdev_cdev;
-int min(int a, int b){
-	if (a < b)
-		return a;
-	return b;
-}
+
+
+
+// int min(int a, int b){
+// 	if (a < b)
+// 		return a;
+// 	return b;
+// }
 /*
  * Just a quick [unlocked] check to see if the cached
  * chrdev state needs to be updated from sensor measurements.
