@@ -5,6 +5,14 @@
 #include <sys/wait.h>
 #include <string.h>
 
+int batts[2], temps[2], lights[2];
+void closefds(){
+    for(int i = 0; i < 2; i ++){
+        close(batts[i]);
+        close(temps[i]);
+        close(lights[i]);
+    }
+}
 
 int main(int argc, char** argv){
     if(argc > 2){
@@ -18,7 +26,7 @@ int main(int argc, char** argv){
 
     
 
-    int batts[2], temps[2], lights[2];
+    
     for(int i = 0 ; i < 2; i ++){
         sprintf(buf, "/dev/lunix%d-batt", i);
         batts[i] = open(buf, 0);
@@ -115,6 +123,7 @@ int main(int argc, char** argv){
     if(argc == 2){
         if(cid > 0){
             //father
+            closefds();
             int ret, status;
             ret = wait(NULL);
             if(ret < 0){
@@ -123,7 +132,16 @@ int main(int argc, char** argv){
             }
             return 0;
         }
-        else return 0;
+        else {
+            closefds();
+            return 0;
+        }
     }
-    else return 0;
+    else {
+        closefds();
+        return 0;
+    }
 }
+
+
+

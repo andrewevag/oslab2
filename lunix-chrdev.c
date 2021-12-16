@@ -34,12 +34,6 @@
 struct cdev lunix_chrdev_cdev;
 
 
-
-// int min(int a, int b){
-// 	if (a < b)
-// 		return a;
-// 	return b;
-// }
 /*
  * Just a quick [unlocked] check to see if the cached
  * chrdev state needs to be updated from sensor measurements.
@@ -174,7 +168,7 @@ static int lunix_chrdev_open(struct inode *inode, struct file *filp)
 	
 	/* Allocate a new Lunix character device private state structure */
 	struct lunix_chrdev_state_struct* new_chdev_state;
-	//MHN 3EXASEIS STO CLOSE TO KFREE.
+	
 	new_chdev_state = (struct lunix_chrdev_state_struct* )kmalloc(sizeof(struct lunix_chrdev_state_struct), GFP_KERNEL);
 
 	if(!new_chdev_state){
